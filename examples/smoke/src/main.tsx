@@ -17,12 +17,31 @@ import {
   Tooltip,
   Dropdown,
   Dialog,
+  OverlayProvider,
+  SkyDrawerProvider,
+  useSkyDrawer,
   type BadgeTone,
   type ButtonSize,
   type ButtonVariant,
 } from "@virstak/ui";
 import "@virstak/ui/styles.css";
 import "./page.css";
+
+function SkySmoke() {
+  const sky = useSkyDrawer();
+  return (
+    <Button
+      onClick={() =>
+        sky.open({
+          title: "Smoke Sky",
+          content: <p>Панель без URL Edge.</p>,
+        })
+      }
+    >
+      SkyDrawer
+    </Button>
+  );
+}
 
 function App() {
   const [clicks, setClicks] = useState(0);
@@ -136,18 +155,28 @@ function App() {
           trigger={<Button variant="secondary">Меню</Button>}
           items={[{ id: "a", label: "Пункт", onSelect: () => setClicks(clicks + 1) }]}
         />
+        <SkySmoke />
         <Button onClick={() => setDialogOpen(true)}>Диалог</Button>
-        <Dialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          title="Smoke dialog"
-        >
-          Независимое приложение.
-        </Dialog>
+        <div data-product="crm">
+          <Dialog
+            open={dialogOpen}
+            onClose={() => setDialogOpen(false)}
+            title="Smoke dialog"
+            description="Портал наследует акцент продукта."
+          >
+            Независимое приложение. Escape закрывает диалог.
+          </Dialog>
+        </div>
       </section>
       <p className="scroll-end">Прокрутка страницы работает.</p>
     </main>
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <OverlayProvider>
+    <SkyDrawerProvider>
+      <App />
+    </SkyDrawerProvider>
+  </OverlayProvider>,
+);

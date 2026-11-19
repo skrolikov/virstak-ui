@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState, type ReactNode } from "react";
-import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 import { Button } from "../Button/Button";
 import { cx } from "../lib/cx";
+import { OverlayPortal } from "../overlay/OverlayPortal";
 import {
   ToastContext,
   type ToastInput,
@@ -36,7 +36,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {createPortal(
+      <OverlayPortal>
         <div className={styles.viewport} aria-live="polite">
           {items.map((item) => (
             <div
@@ -64,9 +64,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               </Button>
             </div>
           ))}
-        </div>,
-        document.body,
-      )}
+        </div>
+      </OverlayPortal>
     </ToastContext.Provider>
   );
 }

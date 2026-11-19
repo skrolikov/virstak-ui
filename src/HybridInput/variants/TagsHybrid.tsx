@@ -6,10 +6,10 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import { createPortal } from "react-dom";
 import { Plus, X } from "lucide-react";
 
 import { cx } from "../../lib/cx";
+import { OverlayPortal } from "../../overlay/OverlayPortal";
 
 import styles from "../HybridInput.module.css";
 import {
@@ -189,18 +189,18 @@ export function TagsHybrid({
         <span className={styles.hint}>{hint}</span>
       ) : null}
 
-      {open && coords
-        ? createPortal(
-            <div
-              ref={menuRef}
-              className={styles.menu}
-              style={{
-                top: coords.top,
-                left: coords.left,
-                width: coords.width,
-              }}
-              role="listbox"
-            >
+      {open && coords ? (
+        <OverlayPortal>
+          <div
+            ref={menuRef}
+            className={styles.menu}
+            style={{
+              top: coords.top,
+              left: coords.left,
+              width: coords.width,
+            }}
+            role="listbox"
+          >
               {filtered.map((opt, index) => (
                 <button
                   key={opt.id}
@@ -244,10 +244,9 @@ export function TagsHybrid({
               {!filtered.length && !showCreate ? (
                 <div className={styles.empty}>Ничего не найдено</div>
               ) : null}
-            </div>,
-            document.body,
-          )
-        : null}
+          </div>
+        </OverlayPortal>
+      ) : null}
     </div>
   );
 }

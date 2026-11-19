@@ -24,6 +24,15 @@ export type {
   TabsPanelProps,
   TabsSwitcher,
 } from "./Tabs/Tabs";
+export {
+  OverlayProvider,
+  OverlayPortal,
+  useOverlayPortal,
+  useEscapeLayer,
+  useScrollLock,
+  useFocusTrap,
+} from "./overlay";
+export type { OverlayProviderProps } from "./overlay";
 export { Tooltip } from "./Tooltip/Tooltip";
 export type { TooltipProps } from "./Tooltip/Tooltip";
 export { Dropdown } from "./Dropdown/Dropdown";
@@ -83,3 +92,16 @@ export type {
   CanvasSeries,
   ChartTone,
 } from "./canvas";
+export {
+  SkyDrawerProvider,
+  useSkyDrawer,
+  SkyDrawerHost,
+} from "./SkyDrawer";
+export type {
+  SkyDurableRef,
+  SkyDrawerAdapter,
+  SkyDrawerPanel,
+  SkyDrawerPanelOptions,
+  SkyDrawerContextValue,
+  SkyDrawerProviderProps,
+} from "./SkyDrawer";

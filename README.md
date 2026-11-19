@@ -2,13 +2,15 @@
 
 Дизайн-система VIRSTAK: React-компоненты и CSS foundation.
 
-Исходники живут в Git: [github.com/skrolikov/virstak-ui](https://github.com/skrolikov/virstak-ui). Пакет **приватный**, в npm не публикуется. Версия `0.0.2-local`.
+Исходники живут в Git: [github.com/skrolikov/virstak-ui](https://github.com/skrolikov/virstak-ui). Пакет **приватный**, в npm не публикуется. Версия `0.0.4-local`.
 
 ## Что внутри
 
 Button, Badge, Input, InlineInput, Select, Checkbox, Avatar, Skeleton, EmptyState, Tabs, Tooltip, Dropdown, Dialog, Drawer, Toast, DataTable, HybridInput, ErrorScene, StatCard, Sparkline / AreaChart / BarChart и токены темы.
 
-**SkyDrawer** остаётся в Edge: движок панелей связан с роутером, URL `?sky=` и реестром продуктов.
+**SkyDrawer** в пакете — стек, pin, геометрия, presence и portal. URL `?sky=`, Back и реестр сущностей — адаптер Edge (`SkyDrawerAdapter`).
+
+`OverlayProvider` копирует `data-theme` / `data-design` / `data-product` на портал, складывает Escape и scroll-lock, ловит фокус в Dialog/Drawer. Без провайдера оверлеи читают атрибуты с `html` и `[data-product]`.
 
 ## Подключение без npm registry
 
@@ -55,6 +57,6 @@ npm run typecheck
 npm run pack:local
 ```
 
-`pack:local` пишет `artifacts/virstak-ui-0.0.2-local.tgz` только на диск. Smoke ставит этот tarball.
+`pack:local` пишет `artifacts/virstak-ui-0.0.4-local.tgz` только на диск. Smoke ставит этот tarball.
 
 Edge: `file:../virstak-ui`. После смены библиотеки пересобрать UI и повторить установку в Edge и smoke.

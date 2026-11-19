@@ -1,7 +1,7 @@
-import { createPortal } from "react-dom";
 import type { CSSProperties } from "react";
 
 import { cx } from "../../lib/cx";
+import { OverlayPortal } from "../../overlay/OverlayPortal";
 
 import styles from "./ChartTooltip.module.css";
 
@@ -29,15 +29,16 @@ export function ChartTooltip({ model }: ChartTooltipProps) {
     ["--tip-accent" as string]: model.accent ?? "#50ba88",
   } as CSSProperties;
 
-  return createPortal(
-    <div className={cx(styles.tooltip, styles.visible)} style={style} role="tooltip">
-      <span className={styles.label}>{model.label ?? "Значение"}</span>
-      <div className={styles.valueRow}>
-        <span className={styles.dot} aria-hidden />
-        <span className={styles.value}>{model.value}</span>
+  return (
+    <OverlayPortal>
+      <div className={cx(styles.tooltip, styles.visible)} style={style} role="tooltip">
+        <span className={styles.label}>{model.label ?? "Значение"}</span>
+        <div className={styles.valueRow}>
+          <span className={styles.dot} aria-hidden />
+          <span className={styles.value}>{model.value}</span>
+        </div>
+        {model.meta ? <div className={styles.meta}>{model.meta}</div> : null}
       </div>
-      {model.meta ? <div className={styles.meta}>{model.meta}</div> : null}
-    </div>,
-    document.body,
+    </OverlayPortal>
   );
 }

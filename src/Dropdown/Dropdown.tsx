@@ -8,9 +8,9 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
-
 import { cx } from "../lib/cx";
+import { OverlayPortal } from "../overlay/OverlayPortal";
+import { useEscapeLayer } from "../overlay/useEscapeLayer";
 
 import styles from "./Dropdown.module.css";
 
@@ -104,22 +104,19 @@ export function Dropdown({
       setOpen(false);
     };
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-
     document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
     window.addEventListener("resize", updatePosition);
     window.addEventListener("scroll", updatePosition, true);
 
     return () => {
       document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
   }, [open, updatePosition]);
+
+  const close = useCallback(() => setOpen(false), []);
+  useEscapeLayer(open, close);
 
   const menuStyle: CSSProperties | undefined = coords
     ? {
@@ -147,34 +144,33 @@ export function Dropdown({
       >
         {trigger}
       </div>
-      {open
-        ? createPortal(
-            <div
-              ref={menuRef}
-              className={styles.menu}
-              role="menu"
-              id={menuId}
-              style={menuStyle}
-            >
-              {items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  role="menuitem"
-                  className={cx(styles.item, item.danger && styles.itemDanger)}
-                  onClick={() => {
-                    item.onSelect?.();
-                    setOpen(false);
-                  }}
-                >
-                  {item.icon}
-                  {item.label}
-                </button>
-              ))}
-            </div>,
-            document.body,
-          )
-        : null}
+      {open ? (
+        <OverlayPortal>
+          <div
+            ref={menuRef}
+            className={styles.menu}
+            role="menu"
+            id={menuId}
+            style={menuStyle}
+          >
+            {items.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                role="menuitem"
+                className={cx(styles.item, item.danger && styles.itemDanger)}
+                onClick={() => {
+                  item.onSelect?.();
+                  setOpen(false);
+                }}
+              >
+                {item.icon}
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </OverlayPortal>
+      ) : null}
     </div>
   );
 }

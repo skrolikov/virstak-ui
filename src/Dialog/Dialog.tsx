@@ -1,13 +1,18 @@
 import {
-  useEffect,
+  useCallback,
+  useId,
+  useRef,
   type ReactNode,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 import { Button } from "../Button/Button";
 import { cx } from "../lib/cx";
+import { OverlayPortal } from "../overlay/OverlayPortal";
+import { useEscapeLayer } from "../overlay/useEscapeLayer";
+import { useFocusTrap } from "../overlay/useFocusTrap";
+import { useScrollLock } from "../overlay/useScrollLock";
 
 import styles from "./Dialog.module.css";
 
@@ -30,22 +35,14 @@ export function Dialog({
   footer,
   className,
 }: DialogProps) {
-  useEffect(() => {
-    if (!open) return;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+  const close = useCallback(() => onClose(), [onClose]);
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [open, onClose]);
+  useScrollLock(open);
+  useEscapeLayer(open, close);
+  useFocusTrap(open, panelRef);
 
   if (!open) return null;
 
@@ -53,41 +50,47 @@ export function Dialog({
     if (event.target === event.currentTarget) onClose();
   };
 
-  return createPortal(
-    <div
-      className={styles.overlay}
-      role="presentation"
-      onClick={handleOverlayClick}
-    >
+  return (
+    <OverlayPortal>
       <div
-        className={cx(styles.panel, className)}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="dialog-title"
+        className={styles.overlay}
+        role="presentation"
+        onClick={handleOverlayClick}
       >
-        <div className={styles.header}>
-          <div>
-            <h2 id="dialog-title" className={styles.title}>
-              {title}
-            </h2>
-            {description ? (
-              <p className={styles.description}>{description}</p>
-            ) : null}
+        <div
+          ref={panelRef}
+          className={cx(styles.panel, className)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          aria-describedby={description ? descriptionId : undefined}
+          tabIndex={-1}
+        >
+          <div className={styles.header}>
+            <div>
+              <h2 id={titleId} className={styles.title}>
+                {title}
+              </h2>
+              {description ? (
+                <p id={descriptionId} className={styles.description}>
+                  {description}
+                </p>
+              ) : null}
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              iconOnly
+              aria-label="Закрыть"
+              onClick={onClose}
+            >
+              <X size={16} />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            iconOnly
-            aria-label="Закрыть"
-            onClick={onClose}
-          >
-            <X size={16} />
-          </Button>
+          {children ? <div className={styles.body}>{children}</div> : null}
+          {footer ? <div className={styles.footer}>{footer}</div> : null}
         </div>
-        {children ? <div className={styles.body}>{children}</div> : null}
-        {footer ? <div className={styles.footer}>{footer}</div> : null}
       </div>
-    </div>,
-    document.body,
+    </OverlayPortal>
   );
 }

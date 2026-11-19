@@ -1,13 +1,18 @@
 import {
-  useEffect,
+  useCallback,
+  useId,
+  useRef,
   type ReactNode,
   type MouseEvent as ReactMouseEvent,
 } from "react";
-import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 import { Button } from "../Button/Button";
 import { cx } from "../lib/cx";
+import { OverlayPortal } from "../overlay/OverlayPortal";
+import { useEscapeLayer } from "../overlay/useEscapeLayer";
+import { useFocusTrap } from "../overlay/useFocusTrap";
+import { useScrollLock } from "../overlay/useScrollLock";
 
 import styles from "./Drawer.module.css";
 
@@ -34,22 +39,14 @@ export function Drawer({
   footer,
   className,
 }: DrawerProps) {
-  useEffect(() => {
-    if (!open) return;
+  const panelRef = useRef<HTMLElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+  const close = useCallback(() => onClose(), [onClose]);
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [open, onClose]);
+  useScrollLock(open);
+  useEscapeLayer(open, close);
+  useFocusTrap(open, panelRef);
 
   if (!open) return null;
 
@@ -57,26 +54,31 @@ export function Drawer({
     if (event.target === event.currentTarget) onClose();
   };
 
-  return createPortal(
-    <>
+  return (
+    <OverlayPortal>
       <div
         className={styles.overlay}
         role="presentation"
         onClick={handleOverlayClick}
       />
       <aside
+        ref={panelRef}
         className={cx(styles.panel, styles[side], className)}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="drawer-title"
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
+        tabIndex={-1}
       >
         <div className={styles.header}>
           <div>
-            <h2 id="drawer-title" className={styles.title}>
+            <h2 id={titleId} className={styles.title}>
               {title}
             </h2>
             {description ? (
-              <p className={styles.description}>{description}</p>
+              <p id={descriptionId} className={styles.description}>
+                {description}
+              </p>
             ) : null}
           </div>
           <Button
@@ -92,7 +94,6 @@ export function Drawer({
         {children ? <div className={styles.body}>{children}</div> : null}
         {footer ? <div className={styles.footer}>{footer}</div> : null}
       </aside>
-    </>,
-    document.body,
+    </OverlayPortal>
   );
 }

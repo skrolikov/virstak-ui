@@ -1,14 +1,18 @@
 import {
+  cloneElement,
+  isValidElement,
   useEffect,
   useId,
   useRef,
   useState,
   type CSSProperties,
+  type HTMLAttributes,
+  type ReactElement,
   type ReactNode,
 } from "react";
-import { createPortal } from "react-dom";
 
 import { cx } from "../lib/cx";
+import { OverlayPortal } from "../overlay/OverlayPortal";
 
 import styles from "./Tooltip.module.css";
 
@@ -85,6 +89,21 @@ export function Tooltip({
     left: coords.left,
   };
 
+  const describedBy = open ? tipId : undefined;
+  const trigger = isValidElement(children)
+    ? cloneElement(
+        children as ReactElement<HTMLAttributes<HTMLElement>>,
+        {
+          "aria-describedby": [
+            (children.props as HTMLAttributes<HTMLElement>)["aria-describedby"],
+            describedBy,
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined,
+        },
+      )
+    : children;
+
   return (
     <span
       ref={triggerRef}
@@ -94,21 +113,20 @@ export function Tooltip({
       onFocus={() => setOpen(true)}
       onBlur={() => setOpen(false)}
     >
-      {children}
-      {open
-        ? createPortal(
-            <span
-              ref={tipRef}
-              id={tipId}
-              role="tooltip"
-              className={cx(styles.tooltip, styles.visible)}
-              style={style}
-            >
-              {content}
-            </span>,
-            document.body,
-          )
-        : null}
+      {trigger}
+      {open ? (
+        <OverlayPortal>
+          <span
+            ref={tipRef}
+            id={tipId}
+            role="tooltip"
+            className={cx(styles.tooltip, styles.visible)}
+            style={style}
+          >
+            {content}
+          </span>
+        </OverlayPortal>
+      ) : null}
     </span>
   );
 }
