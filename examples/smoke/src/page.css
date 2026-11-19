@@ -1,0 +1,26 @@
+/* Only the consumer owns page layout, fonts and scrolling. */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+main {
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 16px;
+}
+section {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-block: 24px;
+}
+section[data-theme] {
+  background: var(--color-bg);
+  padding: 24px;
+}
+.scroll-end {
+  margin-top: 120vh;
+}

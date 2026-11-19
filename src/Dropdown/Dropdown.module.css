@@ -1,0 +1,76 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.root, .root *, .menu, .menu *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.item {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.root {
+  position: relative;
+  display: inline-flex;
+}
+
+.menu {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  min-width: 180px;
+  padding: var(--space-1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn var(--duration-fast) var(--ease-out);
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--color-surface-hover);
+  outline: none;
+}
+
+.itemDanger {
+  color: var(--color-danger);
+}
+
+.separator {
+  height: 1px;
+  margin: var(--space-1) 0;
+  background: var(--color-border);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.root, .root *, .menu, .menu *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

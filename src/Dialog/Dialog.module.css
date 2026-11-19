@@ -1,0 +1,100 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.overlay, .overlay *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  /* Above SkyDrawer/Drawer (modal+10…), below toast/dropdown */
+  z-index: calc(var(--z-modal) + 40);
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+  background: var(--color-overlay);
+  animation: fadeIn var(--duration-normal) var(--ease-out);
+}
+
+.panel {
+  width: min(480px, 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn var(--duration-normal) var(--ease-out);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5) var(--space-3);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.description {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.body {
+  padding: 0 var(--space-5) var(--space-5);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .overlay {
+    padding: var(--space-3);
+    padding-bottom: calc(
+      var(--space-3) + var(--phone-dock-height) + env(safe-area-inset-bottom, 0px)
+    );
+    align-items: end;
+  }
+
+  .panel {
+    width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.overlay, .overlay *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

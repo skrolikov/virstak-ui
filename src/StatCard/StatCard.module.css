@@ -1,0 +1,68 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.card, .card *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Preserve the zero-duration behavior of the previously unresolved easing token. */
+.card {
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--surface-glass);
+  transition: border-color 0s var(--ease-standard);
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--color-brand) 40%, var(--color-border));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.label {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sparkline {
+  flex: 0 0 84px;
+  height: 36px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.subValue {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.value {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.card, .card *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

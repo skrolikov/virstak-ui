@@ -1,0 +1,97 @@
+:root {
+  /* Background */
+  --color-bg: #0b0c0f;
+  --color-surface: #14161b;
+  --color-surface-raised: #1b1e25;
+  --color-surface-hover: #22262f;
+
+  /* Text */
+  --color-text: #f4f5f7;
+  --color-text-secondary: #9298a5;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #0b0c0f;
+
+  /* Brand — Core / Platform */
+  --color-brand: #50ba88;
+  --color-brand-hover: #65c99a;
+  --color-brand-active: #3fa872;
+  --color-brand-muted: rgba(80, 186, 136, 0.16);
+
+  /* Semantic */
+  --color-success: #50ba88;
+  --color-warning: #e5a84b;
+  --color-danger: #e5484d;
+  --color-info: #36a9e1;
+
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-focus-ring: rgba(80, 186, 136, 0.45);
+
+  /* Overlay */
+  --color-overlay: rgba(0, 0, 0, 0.55);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Typography */
+  --font-sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.875rem;
+  /* Keep the inherited size of legacy unresolved font-size declarations. */
+  --text-base: 1em;
+  --text-lg: 1rem;
+  --text-xl: clamp(1.125rem, 1rem + 0.35vw, 1.35rem);
+  --text-2xl: clamp(1.35rem, 1.2rem + 0.55vw, 1.75rem);
+  --text-3xl: clamp(1.65rem, 1.4rem + 0.9vw, 2.25rem);
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+
+  /* Motion */
+  --ease-standard: ease;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-slow: 320ms;
+
+  /* Layout */
+  --z-dropdown: 600;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+
+  --control-height-sm: 32px;
+  --control-height-md: 40px;
+  --control-height-lg: 48px;
+}

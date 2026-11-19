@@ -1,0 +1,89 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.root, .root *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.root {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0 0 3px;
+  border-bottom: 1.5px solid color-mix(in srgb, var(--color-border-strong) 80%, transparent);
+  background: transparent;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.root:focus-within {
+  border-bottom-color: var(--color-brand);
+}
+
+.disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  outline: none;
+  appearance: textfield;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.affix {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.left .input {
+  text-align: left;
+}
+
+.center .input {
+  text-align: center;
+}
+
+.right .input {
+  text-align: right;
+}
+
+.sm {
+  min-width: 36px;
+}
+
+.sm .input {
+  font-size: var(--text-xs);
+}
+
+.md {
+  min-width: 52px;
+}
+
+.md .input {
+  font-size: var(--text-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.root, .root *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

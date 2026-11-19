@@ -1,0 +1,26 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.root, .root *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.root {
+  position: relative;
+  width: 100%;
+  height: 180px;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.root, .root *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

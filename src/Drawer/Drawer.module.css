@@ -1,0 +1,123 @@
+/* The part of the Edge reset needed by this component, scoped at zero specificity. */
+:where(.overlay, .overlay *, .panel, .panel *) {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--color-overlay);
+  animation: fadeIn var(--duration-normal) var(--ease-out);
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: calc(var(--z-modal) + 1);
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+}
+
+.right {
+  right: 0;
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  animation: slideInRight var(--duration-normal) var(--ease-out);
+}
+
+.left {
+  left: 0;
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  animation: slideInLeft var(--duration-normal) var(--ease-out);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+}
+
+.description {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.body {
+  flex: 1;
+  overflow: auto;
+  padding: 0 var(--space-5) var(--space-5);;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .panel {
+    width: min(100%, 100vw);
+    bottom: calc(var(--phone-dock-height) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .right,
+  .left {
+    border-radius: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.overlay, .overlay *, .panel, .panel *) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
