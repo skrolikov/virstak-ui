@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "declaration": false,
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": ["tests", "src"],
+  "exclude": ["tests/live-list.test.ts"]
+}

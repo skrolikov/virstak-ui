@@ -11,7 +11,7 @@
 
 .tooltip {
   position: fixed;
-  z-index: 10050;
+  z-index: var(--z-tooltip);
   max-width: 240px;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);

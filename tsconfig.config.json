@@ -1,5 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "rootDir": ".", "declaration": false, "noEmit": true, "types": ["node"] },
+  "compilerOptions": {
+    "rootDir": ".",
+    "declaration": false,
+    "noEmit": true,
+    "types": ["node", "vitest/config"]
+  },
   "include": ["vite.config.ts"]
 }

@@ -11,21 +11,16 @@
 
 /* Preserve the zero-duration behavior of the previously unresolved easing token. */
 .wrap {
-  width: 100%;
-  overflow: auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-}
-
-.wrapFit {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 auto;
+  align-self: stretch;
+  width: 100%;
   min-height: 0;
-  height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 19px;
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
 }
 
 /* ── Toolbar ── */
@@ -81,9 +76,47 @@
 }
 
 .paginationInfo {
+  margin-left: auto;
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   white-space: nowrap;
+}
+
+/* ── Scroller ── */
+
+.scroller {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.reveal {
+  position: sticky;
+  top: var(--space-2);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  height: 0;
+}
+
+.revealBtn {
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-brand);
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+.revealBtn:hover {
+  background: var(--color-surface-hover);
 }
 
 /* ── Table ── */
@@ -91,6 +124,7 @@
 .table {
   width: 100%;
   min-width: 560px;
+  border-collapse: collapse;
 }
 
 .headCell,
@@ -101,6 +135,9 @@
 }
 
 .headCell {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   font-size: var(--text-xs);
   font-weight: var(--weight-semibold);
   letter-spacing: 0.04em;
@@ -148,55 +185,19 @@
   text-align: center;
 }
 
-/* ── Footer / Pagination ── */
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-3) var(--space-4);
-  border-top: 1px solid var(--color-border);
-}
-
-.pageInfo {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-
-.pageActions {
-  display: flex;
-  gap: var(--space-1);
-}
-
-.pageBtn {
-  height: 32px;
-  min-width: 32px;
-  padding: 0 var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  font: inherit;
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition:
-    background-color 0s var(--ease-standard),
-    border-color 0s var(--ease-standard);
-}
-
-.pageBtn:hover:not(:disabled) {
-  background: var(--color-surface-hover);
-  border-color: var(--color-brand);
-}
-
-.pageBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+.padCell {
+  padding: 0;
+  border: 0;
+  line-height: 0;
 }
 
 /* ── Empty state ── */
 
 .empty {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  place-items: center;
   padding: var(--space-8);
 }
 
@@ -219,11 +220,6 @@
   .headCell,
   .cell {
     padding: var(--space-2) var(--space-3);
-  }
-
-  .footer {
-    flex-wrap: wrap;
-    gap: var(--space-2);
   }
 
   .table {

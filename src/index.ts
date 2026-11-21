@@ -16,6 +16,26 @@ export { Skeleton } from "./Skeleton/Skeleton";
 export type { SkeletonProps } from "./Skeleton/Skeleton";
 export { EmptyState } from "./EmptyState/EmptyState";
 export type { EmptyStateProps } from "./EmptyState/EmptyState";
+export { PageLoader } from "./PageLoader/PageLoader";
+export type { PageLoaderProps } from "./PageLoader/PageLoader";
+export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
+export type {
+  ErrorBoundaryProps,
+  ErrorBoundaryFallbackProps,
+} from "./ErrorBoundary/ErrorBoundary";
+export {
+  ThemeProvider,
+  useTheme,
+  ThemeContext,
+  THEME_STORAGE_KEY,
+  THEME_PREFERENCE_KEY,
+} from "./theme";
+export type {
+  ThemeProviderProps,
+  ThemeMode,
+  ThemePreference,
+  ThemeContextValue,
+} from "./theme";
 export { Tabs, TabsList, TabsTab, TabsPanel } from "./Tabs/Tabs";
 export type {
   TabsProps,
@@ -59,7 +79,9 @@ export {
   getSortedRowModel,
   getPaginationRowModel,
 } from "./DataTable/DataTable";
-export type { DataTableProps } from "./DataTable/DataTable";
+export type { DataTableProps, DataTableViewport } from "./DataTable/DataTable";
+export { VirtualList } from "./virtual/VirtualList";
+export type { VirtualListProps, VirtualListViewport } from "./virtual/VirtualList";
 export { HybridInput } from "./HybridInput/HybridInput";
 export type {
   HybridInputProps,

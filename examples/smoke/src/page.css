@@ -24,3 +24,7 @@ section[data-theme] {
 .scroll-end {
   margin-top: 120vh;
 }
+section[aria-label="Table and search"] {
+  display: grid;
+  width: 100%;
+}

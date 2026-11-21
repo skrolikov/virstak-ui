@@ -46,7 +46,8 @@ export function SearchHybrid({
   const [creating, setCreating] = useState(false);
   const coords = usePopoverMenu(open, rootRef);
   const editingRef = useRef(false);
-  const dirtyRef = useRef(false);
+  // В inline поле показывает выбранную подпись: пока её не меняли, список не сужаем.
+  const [narrow, setNarrow] = useState(false);
 
   useEffect(() => {
     if (!inline) return;
@@ -54,7 +55,7 @@ export function SearchHybrid({
     setQuery(value?.label ?? "");
   }, [inline, value]);
 
-  const filterQuery = dirtyRef.current ? query : "";
+  const filterQuery = inline && !narrow ? "" : query;
 
   const filtered = useMemo(
     () => options.filter((opt) => filter(opt, filterQuery)),
@@ -112,7 +113,7 @@ export function SearchHybrid({
     const next = options.find((opt) => opt.id === id) ?? null;
     onChange(next);
     editingRef.current = false;
-    dirtyRef.current = false;
+    setNarrow(false);
     if (inline) {
       setQuery(next?.label ?? "");
     } else {
@@ -154,7 +155,7 @@ export function SearchHybrid({
 
   const emitInlineText = (next: string) => {
     editingRef.current = true;
-    dirtyRef.current = true;
+    setNarrow(true);
     setQuery(next);
     setOpen(true);
     if (!next.trim()) {
@@ -220,7 +221,7 @@ export function SearchHybrid({
         )}
       >
         {!inline && value && !query ? (
-          <span className={styles.valueChip}>
+          <span key="chip" className={styles.valueChip}>
             <span>{value.label}</span>
             {clearable ? (
               <button
@@ -235,6 +236,7 @@ export function SearchHybrid({
           </span>
         ) : null}
         <input
+          key="query"
           id={fieldId}
           className={styles.input}
           value={inline ? query : value && !query ? "" : query}
@@ -249,16 +251,20 @@ export function SearchHybrid({
             setOpen(true);
           }}
           onFocus={() => {
-            dirtyRef.current = false;
+            if (inline) {
+              setNarrow(false);
+              editingRef.current = true;
+            }
             setOpen(true);
-            if (inline) editingRef.current = true;
           }}
           onKeyDown={onKeyDown}
           autoComplete="off"
+          spellCheck={false}
         />
         {clearable &&
         (inline ? Boolean(query || value) : Boolean(value && !query)) ? (
           <button
+            key="clear"
             type="button"
             className={styles.clearBtn}
             onClick={clear}
@@ -279,6 +285,7 @@ export function SearchHybrid({
           <div
             ref={menuRef}
             className={styles.menu}
+            onMouseDown={(event) => event.preventDefault()}
             style={{
               top: coords.top,
               left: coords.left,

@@ -1,20 +1,8 @@
 :root {
-  --surface-glass-soft: color-mix(
-    in srgb,
-    var(--color-surface) 60%,
-    transparent
-  );
-  --surface-glass: color-mix(in srgb, var(--color-surface) 82%, transparent);
-  --surface-glass-strong: color-mix(
-    in srgb,
-    var(--color-surface) 92%,
-    transparent
-  );
-  --surface-raised-glass: color-mix(
-    in srgb,
-    var(--color-surface-raised) 70%,
-    transparent
-  );
+  --surface-glass-soft: var(--color-surface);
+  --surface-glass: var(--color-surface);
+  --surface-glass-strong: var(--color-surface);
+  --surface-raised-glass: var(--color-surface-raised);
 }
 
 [data-theme="dark"] {
@@ -29,26 +17,14 @@
   --color-text-inverse: #0b0c0f;
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-strong: rgba(255, 255, 255, 0.14);
-  --color-overlay: rgba(0, 0, 0, 0.55);
+  --color-overlay: rgba(11, 12, 15, 0.72);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
-  --surface-glass-soft: color-mix(
-    in srgb,
-    var(--color-surface) 60%,
-    transparent
-  );
-  --surface-glass: color-mix(in srgb, var(--color-surface) 82%, transparent);
-  --surface-glass-strong: color-mix(
-    in srgb,
-    var(--color-surface) 92%,
-    transparent
-  );
-  --surface-raised-glass: color-mix(
-    in srgb,
-    var(--color-surface-raised) 70%,
-    transparent
-  );
+  --surface-glass-soft: var(--color-surface);
+  --surface-glass: var(--color-surface);
+  --surface-glass-strong: var(--color-surface);
+  --surface-raised-glass: var(--color-surface-raised);
 }
 
 [data-theme="light"] {
@@ -63,26 +39,14 @@
   --color-text-inverse: #f4f5f7;
   --color-border: rgba(11, 12, 15, 0.1);
   --color-border-strong: rgba(11, 12, 15, 0.16);
-  --color-overlay: rgba(11, 12, 15, 0.4);
+  --color-overlay: rgba(11, 12, 15, 0.55);
   --shadow-sm: 0 1px 2px rgba(11, 12, 15, 0.08);
   --shadow-md: 0 8px 24px rgba(11, 12, 15, 0.1);
   --shadow-lg: 0 16px 48px rgba(11, 12, 15, 0.14);
-  --surface-glass-soft: color-mix(
-    in srgb,
-    var(--color-surface) 60%,
-    transparent
-  );
-  --surface-glass: color-mix(in srgb, var(--color-surface) 82%, transparent);
-  --surface-glass-strong: color-mix(
-    in srgb,
-    var(--color-surface) 92%,
-    transparent
-  );
-  --surface-raised-glass: color-mix(
-    in srgb,
-    var(--color-surface-raised) 70%,
-    transparent
-  );
+  --surface-glass-soft: var(--color-surface);
+  --surface-glass: var(--color-surface);
+  --surface-glass-strong: var(--color-surface);
+  --surface-raised-glass: var(--color-surface-raised);
 }
 
 [data-design="simple"] {

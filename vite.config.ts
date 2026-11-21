@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -19,8 +20,14 @@ export default defineConfig({
         "react-dom/client",
         "lucide-react",
         "@tanstack/react-table",
+        "@tanstack/react-virtual",
       ],
     },
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["tests/setup.ts"],
+    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
   },
   plugins: [
     {

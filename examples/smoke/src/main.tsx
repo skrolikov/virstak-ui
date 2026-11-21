@@ -3,7 +3,11 @@ import { createRoot } from "react-dom/client";
 import {
   Badge,
   Button,
+  DataTable,
+  Drawer,
+  HybridInput,
   Input,
+  PageLoader,
   Select,
   Checkbox,
   Avatar,
@@ -14,15 +18,21 @@ import {
   TabsList,
   TabsTab,
   TabsPanel,
+  ToastProvider,
   Tooltip,
   Dropdown,
   Dialog,
   OverlayProvider,
   SkyDrawerProvider,
+  ThemeProvider,
+  VirtualList,
   useSkyDrawer,
+  useTheme,
+  useToast,
   type BadgeTone,
   type ButtonSize,
   type ButtonVariant,
+  type HybridOption,
 } from "@virstak/ui";
 import "@virstak/ui/styles.css";
 import "./page.css";
@@ -43,6 +53,37 @@ function SkySmoke() {
   );
 }
 
+function ThemeSmoke() {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <Button variant="ghost" onClick={toggleTheme}>
+      Тема: {theme}
+    </Button>
+  );
+}
+
+function ToastSmoke() {
+  const toast = useToast();
+  return (
+    <Button
+      variant="secondary"
+      onClick={() => toast.push({ title: "Smoke toast", tone: "success" })}
+    >
+      Toast
+    </Button>
+  );
+}
+
+const tableRows = [
+  { id: "1", name: "Alpha" },
+  { id: "2", name: "Beta" },
+];
+
+const searchOptions: HybridOption[] = [
+  { id: "a", label: "Alpha" },
+  { id: "b", label: "Beta" },
+];
+
 function App() {
   const [clicks, setClicks] = useState(0);
   const [name, setName] = useState("");
@@ -50,7 +91,9 @@ function App() {
   const [consent, setConsent] = useState(false);
   const [tab, setTab] = useState("one");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [inlineValue, setInlineValue] = useState("12");
+  const [picked, setPicked] = useState<HybridOption | null>(null);
   const variants: ButtonVariant[] = ["primary", "secondary", "ghost", "danger"];
   const sizes: ButtonSize[] = ["sm", "md", "lg"];
   const tones: BadgeTone[] = [
@@ -66,6 +109,7 @@ function App() {
       <h1>VIRSTAK UI</h1>
       <p>Отдельное приложение: только установленный пакет и React.</p>
       <Button onClick={() => setClicks(clicks + 1)}>Нажатия: {clicks}</Button>
+      <ThemeSmoke />
       <section aria-label="Кнопки">
         {variants.flatMap((variant) =>
           sizes.map((size) => (
@@ -156,7 +200,11 @@ function App() {
           items={[{ id: "a", label: "Пункт", onSelect: () => setClicks(clicks + 1) }]}
         />
         <SkySmoke />
+        <ToastSmoke />
         <Button onClick={() => setDialogOpen(true)}>Диалог</Button>
+        <Button variant="secondary" onClick={() => setDrawerOpen(true)}>
+          Ящик
+        </Button>
         <div data-product="crm">
           <Dialog
             open={dialogOpen}
@@ -166,7 +214,37 @@ function App() {
           >
             Независимое приложение. Escape закрывает диалог.
           </Dialog>
+          <Drawer
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            title="Smoke drawer"
+          >
+            Вложенный overlay и общий Escape-стек.
+          </Drawer>
         </div>
+      </section>
+      <section aria-label="Table and search">
+        <HybridInput
+          variant="search"
+          label="Smoke search"
+          options={searchOptions}
+          value={picked}
+          onChange={setPicked}
+        />
+        <DataTable
+          data={tableRows}
+          columns={[
+            { accessorKey: "id", header: "Id" },
+            { accessorKey: "name", header: "Name" },
+          ]}
+          searchable={false}
+        />
+        <PageLoader label="Smoke loader" />
+        <VirtualList
+          items={tableRows}
+          getKey={(row) => row.id}
+          renderItem={(row) => row.name}
+        />
       </section>
       <p className="scroll-end">Прокрутка страницы работает.</p>
     </main>
@@ -174,9 +252,17 @@ function App() {
 }
 
 createRoot(document.getElementById("root")!).render(
-  <OverlayProvider>
-    <SkyDrawerProvider>
-      <App />
-    </SkyDrawerProvider>
-  </OverlayProvider>,
+  <ThemeProvider
+    defaultPreference="dark"
+    storageKey="virstak-ui-smoke.theme"
+    resolvedStorageKey="virstak-ui-smoke.theme-resolved"
+  >
+    <OverlayProvider>
+      <ToastProvider>
+        <SkyDrawerProvider>
+          <App />
+        </SkyDrawerProvider>
+      </ToastProvider>
+    </OverlayProvider>
+  </ThemeProvider>,
 );

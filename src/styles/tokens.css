@@ -29,7 +29,7 @@
   --color-focus-ring: rgba(80, 186, 136, 0.45);
 
   /* Overlay */
-  --color-overlay: rgba(0, 0, 0, 0.55);
+  --color-overlay: rgba(11, 12, 15, 0.72);
 
   /* Radius */
   --radius-sm: 8px;
@@ -90,6 +90,8 @@
   --z-overlay: 300;
   --z-modal: 400;
   --z-toast: 500;
+  --z-chart: 10000;
+  --z-tooltip: 10050;
 
   --control-height-sm: 32px;
   --control-height-md: 40px;
