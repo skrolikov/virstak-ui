@@ -23,10 +23,13 @@ export type VirtualListViewport = {
 };
 
 export type VirtualListProps<T> = {
-  items: T[];
-  getKey: (item: T) => string;
+  items: readonly T[];
+  getKey: (item: T, index: number) => string;
   renderItem: (item: T, index: number) => ReactNode;
   estimateSize?: number;
+  gap?: number;
+  /** Plain lists use the available height and omit the range header and frame. */
+  variant?: "default" | "plain";
   className?: string;
   onEndReached?: () => void;
   pendingCount?: number;
@@ -43,6 +46,8 @@ export function VirtualList<T>({
   getKey,
   renderItem,
   estimateSize = 64,
+  gap = 0,
+  variant = "default",
   className,
   onEndReached,
   pendingCount = 0,
@@ -59,23 +64,23 @@ export function VirtualList<T>({
   const onViewportChangeRef = useRef(onViewportChange);
   onViewportChangeRef.current = onViewportChange;
 
+  const plain = variant === "plain";
+  const observeEnd = onEndReached != null;
   const windowed = items.length > WINDOW_AFTER;
   const virtualizer = useVirtualizer({
     count: windowed ? items.length : 0,
     getScrollElement: () => scrollerRef.current,
     estimateSize: () => estimateSize,
+    gap,
     overscan: 8,
     initialRect: { width: 800, height: 640 },
-    getItemKey: (index) => {
-      const item = items[index];
-      return item ? getKey(item) : index;
-    },
+    getItemKey: (index) => getKey(items[index], index),
   });
 
   const virtualItems = virtualizer.getVirtualItems();
   const [range, setRange] = useState({ from: 0, to: 0 });
 
-  const structure = items.map((item) => getKey(item)).join("\0");
+  const structure = items.map(getKey).join("\0");
 
   const publish = useCallback(
     (atHead: boolean, from: number, to: number) => {
@@ -114,7 +119,7 @@ export function VirtualList<T>({
       return;
     }
     const next = anchoredScrollTop(anchorRef.current, (key) => {
-      const index = items.findIndex((item) => getKey(item) === key);
+      const index = items.findIndex((item, index) => getKey(item, index) === key);
       if (index < 0) return null;
       const offset = virtualizer.getOffsetForIndex(index, "start");
       return offset ? offset[0] : null;
@@ -126,7 +131,7 @@ export function VirtualList<T>({
   useEffect(() => {
     const node = endRef.current;
     const root = scrollerRef.current;
-    if (!node || !root) return;
+    if (!observeEnd || !node || !root) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) endReachedRef.current?.();
@@ -135,7 +140,7 @@ export function VirtualList<T>({
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [structure, windowed]);
+  }, [observeEnd, plain, structure, windowed]);
 
   useEffect(() => {
     if (windowed) return;
@@ -152,6 +157,51 @@ export function VirtualList<T>({
     return <div className={cx(styles.empty, className)}>{empty}</div>;
   }
 
+  const scroller = (
+    <div
+      ref={scrollerRef}
+      className={cx(
+        styles.scroller,
+        !plain && windowed && styles.scrollerWindow,
+        plain && className,
+      )}
+      onScroll={handleScroll}
+    >
+      {pendingCount > 0 && (
+        <div className={styles.reveal}>
+          <button type="button" className={styles.revealBtn} onClick={reveal}>
+            {pendingLabel(pendingCount)}
+          </button>
+        </div>
+      )}
+      <div
+        className={cx(styles.inner, !windowed && gap > 0 && styles.spaced)}
+        style={windowed ? { height: virtualizer.getTotalSize() } : { gap }}
+      >
+        {windowed
+          ? virtualItems.map((virtualRow) => (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
+                className={styles.row}
+                style={{ transform: `translateY(${virtualRow.start}px)` }}
+              >
+                {renderItem(items[virtualRow.index], virtualRow.index)}
+              </div>
+            ))
+          : items.map((item, index) => (
+              <div key={getKey(item, index)} className={styles.rowStatic}>
+                {renderItem(item, index)}
+              </div>
+            ))}
+      </div>
+      {observeEnd && <div ref={endRef} className={styles.sentinel} />}
+    </div>
+  );
+
+  if (plain) return scroller;
+
   const shownFrom = windowed ? range.from || (virtualItems[0]?.index ?? 0) + 1 : 1;
   const shownTo = windowed
     ? range.to || (virtualItems.length ? virtualItems[virtualItems.length - 1].index + 1 : 0)
@@ -164,48 +214,7 @@ export function VirtualList<T>({
           ? "0"
           : `${shownFrom.toLocaleString("ru-RU")}–${shownTo.toLocaleString("ru-RU")} / ${items.length.toLocaleString("ru-RU")}`}
       </div>
-      <div
-        ref={scrollerRef}
-        className={cx(styles.scroller, windowed && styles.scrollerWindow)}
-        onScroll={handleScroll}
-      >
-        {pendingCount > 0 && (
-          <div className={styles.reveal}>
-            <button type="button" className={styles.revealBtn} onClick={reveal}>
-              {pendingLabel(pendingCount)}
-            </button>
-          </div>
-        )}
-        <div
-          className={styles.inner}
-          style={windowed ? { height: virtualizer.getTotalSize() } : undefined}
-        >
-          {windowed
-            ? virtualItems.map((virtualRow) => {
-                const item = items[virtualRow.index];
-                if (!item) return null;
-                return (
-                  <div
-                    key={String(virtualRow.key)}
-                    data-index={virtualRow.index}
-                    ref={virtualizer.measureElement}
-                    className={styles.row}
-                    style={{
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  >
-                    {renderItem(item, virtualRow.index)}
-                  </div>
-                );
-              })
-            : items.map((item, index) => (
-                <div key={getKey(item)} className={styles.rowStatic}>
-                  {renderItem(item, index)}
-                </div>
-              ))}
-        </div>
-        <div ref={endRef} className={styles.sentinel} />
-      </div>
+      {scroller}
     </div>
   );
 }

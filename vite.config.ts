@@ -12,6 +12,7 @@ export default defineConfig({
       cssFileName: "components",
     },
     rolldownOptions: {
+      output: { banner: '"use client";' },
       external: [
         "react",
         "react/jsx-runtime",
@@ -29,13 +30,4 @@ export default defineConfig({
     setupFiles: ["tests/setup.ts"],
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
   },
-  plugins: [
-    {
-      name: "component-css-import",
-      renderChunk(code, chunk) {
-        if (chunk.isEntry)
-          return { code: 'import "./components.css";\n' + code, map: null };
-      },
-    },
-  ],
 });

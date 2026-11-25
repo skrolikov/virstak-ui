@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5175 --strictPort",
     "typecheck": "tsc --noEmit",
+    "verify:ssr": "tsc --noEmit --strict --module nodenext --types react,react-dom ssr.mts && node ssr.mts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 5175 --strictPort"
   },
   "dependencies": {
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/react-virtual": "^3.13.0",
-    "@virstak/ui": "file:../../artifacts/virstak-ui-0.0.7-local.tgz",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

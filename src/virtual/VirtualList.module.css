@@ -41,6 +41,11 @@
   width: 100%;
 }
 
+.spaced {
+  display: flex;
+  flex-direction: column;
+}
+
 .row {
   position: absolute;
   top: 0;

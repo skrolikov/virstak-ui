@@ -90,4 +90,20 @@ describe("VirtualList", () => {
     await user.click(screen.getByRole("button", { name: "Появилось 3 новые записи" }));
     expect(revealed).toBe(true);
   });
+
+  it("applies the board class to the plain scroller and keeps the card gap", () => {
+    const { container } = render(
+      <VirtualList
+        items={items}
+        getKey={(item) => item.id}
+        renderItem={(item) => item.name}
+        variant="plain"
+        gap={10}
+        className="board-cards"
+      />,
+    );
+    expect(screen.queryByText("1–2 / 2")).not.toBeInTheDocument();
+    expect(container.firstElementChild).toHaveClass("board-cards");
+    expect(screen.getByText("Alpha").parentElement).toHaveStyle({ gap: "10px" });
+  });
 });

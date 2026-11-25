@@ -5,8 +5,9 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    "types": ["vite/client"],
     "strict": true,
-    "skipLibCheck": true,
+    "noUncheckedSideEffectImports": true,
     "noEmit": true
   },
   "include": ["src"]

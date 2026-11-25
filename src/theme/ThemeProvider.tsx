@@ -1,6 +1,6 @@
 import {
   useCallback,
-  useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -39,11 +39,14 @@ function readPreference(
   resolvedKey: string,
   fallback: ThemePreference,
 ): ThemePreference {
-  if (typeof window === "undefined") return fallback;
-  const stored = window.localStorage.getItem(storageKey);
-  if (isPreference(stored)) return stored;
-  const legacy = window.localStorage.getItem(resolvedKey);
-  if (isMode(legacy)) return legacy;
+  try {
+    const stored = window.localStorage.getItem(storageKey);
+    if (isPreference(stored)) return stored;
+    const legacy = window.localStorage.getItem(resolvedKey);
+    if (isMode(legacy)) return legacy;
+  } catch {
+    // Embedded browsers can disable storage.
+  }
   return fallback;
 }
 
@@ -73,40 +76,37 @@ export function ThemeProvider({
   attribute = "theme",
   root = null,
 }: ThemeProviderProps) {
-  const [preference, setPreferenceState] = useState<ThemePreference>(() =>
-    readPreference(storageKey, resolvedStorageKey, defaultPreference),
-  );
+  const [storedPreference, setPreferenceState] = useState<ThemePreference | null>(null);
+  const preference = storedPreference ?? defaultPreference;
   const [theme, setThemeState] = useState<ThemeMode>(() =>
-    resolveTheme(
-      readPreference(storageKey, resolvedStorageKey, defaultPreference),
-    ),
+    defaultPreference === "light" ? "light" : "dark",
   );
 
-  useEffect(() => {
-    const next = resolveTheme(preference);
+  useLayoutEffect(() => {
+    const restored = readPreference(storageKey, resolvedStorageKey, defaultPreference);
+    setPreferenceState((current) => current ?? restored);
+  }, [storageKey, resolvedStorageKey, defaultPreference]);
+
+  useLayoutEffect(() => {
+    if (storedPreference === null) return;
     const target = root ?? document.documentElement;
-    setThemeState(next);
-    applyTheme(target, attribute, next);
-    window.localStorage.setItem(storageKey, preference);
-    window.localStorage.setItem(resolvedStorageKey, next);
-  }, [preference, storageKey, resolvedStorageKey, attribute, root]);
-
-  useEffect(() => {
-    if (preference !== "system") return;
-    if (typeof window.matchMedia !== "function") return;
-
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => {
-      const next = getSystemTheme();
-      const target = root ?? document.documentElement;
+    const update = () => {
+      const next = resolveTheme(storedPreference);
       setThemeState(next);
       applyTheme(target, attribute, next);
-      window.localStorage.setItem(resolvedStorageKey, next);
+      try {
+        window.localStorage.setItem(storageKey, storedPreference);
+        window.localStorage.setItem(resolvedStorageKey, next);
+      } catch {
+        // The theme stays active for this session without storage.
+      }
     };
-
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
-  }, [preference, resolvedStorageKey, attribute, root]);
+    update();
+    if (storedPreference !== "system" || typeof window.matchMedia !== "function") return;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [storedPreference, storageKey, resolvedStorageKey, attribute, root]);
 
   const setPreference = useCallback((next: ThemePreference) => {
     setPreferenceState(next);
@@ -118,10 +118,10 @@ export function ThemeProvider({
 
   const toggleTheme = useCallback(() => {
     setPreferenceState((current) => {
-      const resolved = resolveTheme(current);
+      const resolved = resolveTheme(current ?? defaultPreference);
       return resolved === "dark" ? "light" : "dark";
     });
-  }, []);
+  }, [defaultPreference]);
 
   const value = useMemo(
     () => ({ theme, preference, setPreference, setTheme, toggleTheme }),
