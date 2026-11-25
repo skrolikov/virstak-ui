@@ -1,7 +1,7 @@
 {
   "name": "@virstak/ui",
-  "version": "0.0.7-local",
-  "private": true,
+  "version": "0.1.0",
+  "private": false,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/skrolikov/virstak-ui.git"
@@ -56,5 +56,9 @@
   },
   "dependencies": {
     "lucide-react": "1.75.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
